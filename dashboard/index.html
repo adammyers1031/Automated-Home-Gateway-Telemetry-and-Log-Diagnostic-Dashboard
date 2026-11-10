@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gateway Telemetry · Diagnostics</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+      defer
+    ></script>
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">GT</div>
+        <div>
+          <h1>Gateway Telemetry</h1>
+          <p>Automated home-gateway log diagnostics</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <span class="live-badge" id="liveBadge"><span class="dot"></span> LIVE</span>
+        <a class="docs-link" href="/docs" target="_blank" rel="noreferrer">API docs ↗</a>
+        <div class="range-group" id="rangeGroup" role="group" aria-label="Time range">
+          <button type="button" data-minutes="15">15m</button>
+          <button type="button" data-minutes="60" class="active">1h</button>
+          <button type="button" data-minutes="360">6h</button>
+          <button type="button" data-minutes="1440">24h</button>
+        </div>
+        <span class="updated" id="updated">connecting…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="cards" aria-label="Key metrics">
+        <article class="card score">
+          <span class="label">Network health</span>
+          <strong id="healthScore">—</strong>
+          <span class="sub" id="healthSub">composite score</span>
+        </article>
+        <article class="card">
+          <span class="label">Gateways online</span>
+          <strong id="onlineDevices">—</strong>
+          <span class="sub" id="onlineSub">of fleet</span>
+        </article>
+        <article class="card">
+          <span class="label">Avg latency</span>
+          <strong id="avgLatency">—</strong>
+          <span class="sub">WAN round trip</span>
+        </article>
+        <article class="card">
+          <span class="label">Packet loss</span>
+          <strong id="avgLoss">—</strong>
+          <span class="sub">window average</span>
+        </article>
+        <article class="card">
+          <span class="label">API error rate</span>
+          <strong id="apiErrorRate">—</strong>
+          <span class="sub">HTTP 5xx share</span>
+        </article>
+        <article class="card">
+          <span class="label">Active incidents</span>
+          <strong id="incidentCount">—</strong>
+          <span class="sub" id="incidentSub">diagnosed root causes</span>
+        </article>
+      </section>
+
+      <section class="grid charts">
+        <article class="panel">
+          <header>
+            <h2>Latency &amp; API response</h2>
+            <span class="hint">milliseconds · 1-minute buckets</span>
+          </header>
+          <div class="canvas-wrap">
+            <canvas id="latencyChart"></canvas>
+          </div>
+        </article>
+
+        <article class="panel">
+          <header>
+            <h2>Root-cause mix</h2>
+            <span class="hint">last 24 hours</span>
+          </header>
+          <div class="canvas-wrap">
+            <canvas id="rootCauseChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid split">
+        <article class="panel">
+          <header>
+            <h2>Gateway fleet</h2>
+            <span class="hint" id="fleetHint">—</span>
+          </header>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Device</th>
+                  <th>Status</th>
+                  <th>WAN</th>
+                  <th>Latency</th>
+                  <th>Loss</th>
+                  <th>CPU</th>
+                  <th>Mem</th>
+                  <th>Errors</th>
+                </tr>
+              </thead>
+              <tbody id="deviceRows">
+                <tr><td colspan="8" class="empty">Loading fleet…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <header>
+            <h2>Active incidents</h2>
+            <span class="hint" id="incidentHint">—</span>
+          </header>
+          <div class="incident-list" id="incidentList">
+            <p class="empty">Loading incidents…</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      Simulated fleet · FastAPI + SQLite · <span id="version">v0.1.0</span>
+    </footer>
+  </body>
+</html>
